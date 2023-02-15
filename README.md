@@ -1,1 +1,1 @@
-# automated-symbolic-transcription-hindustani-vocals
+This is the repository for automated-symbolic-transcription-hindustani-vocals. It contains of two sub folders: algorithms and annotations. The details of each sub folder is provided in the README.md files of each folder.
