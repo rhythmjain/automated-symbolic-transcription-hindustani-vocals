@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import statistics
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
@@ -139,26 +140,55 @@ def new_plot_quant(DF, log_freq, sw):
     plt.show()
 
     
-def closest(lf, notes):
+def closest(lf, notes, swara):
     '''
     Function finds the closest log frequency values to the log frequencies
     args lf: Pandas series containing log frequencies of a phrase in the raga 
     notes: log frequencies of the 36 allowed notes.
 
-    returns final
+    returns frequencies and note names of the snapped pitch quantized phrase.
     '''
     closest_notes = []
+    swara_array = []
     
     for j in range(len(lf)):
         if lf.iloc[j] == 0:
             closest_notes.append(np.nan)
+            swara_array.append(np.nan)
         else:
             diff = notes - lf.iloc[j]
             ids=np.where(abs(diff) == min(abs(diff)))[0][0]
+            swara_array.append(swara[ids])
             closest_notes.append(notes[ids])
+            # print("printing inside closest func:",swara[ids], notes[ids])
+            
     #use binary search
     
-    return closest_notes
+    return closest_notes, swara_array
+
+def time_dur_sw(df_closest_swaras):
+    ''' 
+    Gets the quantized notes in the format time<>duration<>swara 
+    '''
+
+    df_res = pd.DataFrame(columns = ['time_s', 'duration', 'swara'])
+
+    time_s = df_closest_swaras.iloc[0].time
+    min_dur = df_closest_swaras.iloc[1].time - df_closest_swaras.iloc[0].time
+    dur = min_dur
+    for i in range(len(df_closest_swaras)-1):
+        # pdb.set_trace()
+        if df_closest_swaras.iloc[i].closest_swaras == df_closest_swaras.iloc[i+1].closest_swaras :
+            dur += min_dur
+        else:
+            entry = [time_s, dur, df_closest_swaras.iloc[i].closest_swaras]
+            # df_res.append(entry)
+            df_res.loc[len(df_res.index)] = entry
+            time_s = df_closest_swaras.iloc[i+1].time
+
+
+
+    return df_res
 
 def get_pace(phrase_start, phrase_end):
     """

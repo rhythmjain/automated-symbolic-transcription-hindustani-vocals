@@ -18,7 +18,7 @@ class InputData:
         dire =[x[2] for x in os.walk(path)]
         for files in dire:
             for file in files:
-        #         print(file)
+                
                 match = re.search(reg, file)
                 if match.group(0) == '.mphrases-manual.txt':
                     mphrases.append(file)
@@ -35,9 +35,9 @@ class InputData:
         tempo_path=[]
         for i,x in enumerate(os.walk(path)):
             if i>0 and i <54:
+
                 
                 a=x[0]+"/"+mphrases[i-1]
-                # print(a)
                 df_gt=pd.read_csv(a, delimiter="\t", header=None)
                 df_gt.columns=["time", "type", "duration", "phrase"]
                 ground_truth_notes.append(df_gt)

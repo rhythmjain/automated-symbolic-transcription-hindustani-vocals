@@ -8,9 +8,9 @@ import pandas as pd
 import numpy as np
 import time
 import matplotlib.pyplot as plt
-from files_and_swaras import *
+from ragas_and_swaras import *
 from ornamentation import *
-from quantization import *
+import quantization as quant
 from ground_truth_preprocessing import *
  
 class Raga:
@@ -27,6 +27,7 @@ class Raga:
 		self.silences = None #array of silences in the whole file
 		self.ornamentation=None
 		self.eval_df=[]
+
 
 	def set_raga_object(self, pitches_path, ctonic_path):
 		# xxx: make public

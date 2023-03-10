@@ -137,22 +137,22 @@ def theWHERE(raga1, frame_len ,  hop_len,  y_thresh , x_thresh):
         
     
     '''
-    df_what = pd.DataFrame(columns = ['time', 'F0', 'orn_samples', 'dir_changes', 'unique_notes', 'orn_type'])
+    df_ornamentations = pd.DataFrame(columns = ['time', 'F0', 'orn_samples', 'dir_changes', 'unique_notes', 'orn_type'])
     # ornaments=dict()
     ma_curves_all_frames=[]
     
     for i in range(0,len(raga1.phrases)):
-    # for i in range(4, 5):
-
         if raga1.phrases[i][0]==0 and raga1.phrases[i][1] == 0:
 #             print("Encountered (0,0), skipping")
             # ornaments[i] = {'starts': [] , 'ends': []} 
-            df_what.loc[i] =  [[], [], [], [], [], []]
+            df_ornamentations.loc[i] =  [[], [], [], [], [], []]
             continue
         curr_phrase = raga1.df_f0.iloc[raga1.phrases[i][0]:raga1.phrases[i][1]]
-        frame_len = frame_len 
-        hop_len = hop_len
-        curr_phrase['closest']=closest(curr_phrase['log_freq'], raga1.log_freq)
+
+        curr_phrase['closest'], curr_phrase['closest_swaras'] = closest(curr_phrase['log_freq'], raga1.log_freq, raga1.sw)
+        # print("i:", i,"\ncurr_phrase['closest']:", curr_phrase['closest'], "\ncurr_phrase[swaras]:",curr_phrase['closest_swaras'])
+        df_quantized_notes = time_dur_sw(curr_phrase[['time','closest_swaras']])
+        
         x_closest = np.array(curr_phrase['closest'].tolist())
         # print("x_closest", x_closest)
         # array_of_arrays_closest = list(curr_phrase['closest'])
@@ -188,9 +188,8 @@ def theWHERE(raga1, frame_len ,  hop_len,  y_thresh , x_thresh):
     #the WHAT
         dir_changes, original_orn_samples, unique_notes, orn_type = get_ornament_regions_and_type(x_closest, orn_samples, phrase_id=i,
                                                                                                   frame_len = frame_len ,  hop_len = hop_len, plots = False)
-        df_what.loc[i] = [list(curr_phrase['time']), x_closest, original_orn_samples, dir_changes,  unique_notes, orn_type]
-
-    return df_what
+        df_ornamentations.loc[i] = [list(curr_phrase['time']), x_closest, original_orn_samples, dir_changes,  unique_notes, orn_type]
+    return df_quantized_notes, df_ornamentations
 
 #The "WHAT"
 

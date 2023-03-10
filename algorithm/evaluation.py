@@ -8,7 +8,7 @@ import re
 
 #NOTES
 # from https://pypi.org/project/strsimpy/#normalized-similarity-and-distance
-from strsimpy.weighted_levenshtein import WeightedLevenshtein
+# from strsimpy.weighted_levenshtein import WeightedLevenshtein
 
 def insertion_cost(char):
     return 0.5
@@ -21,10 +21,10 @@ def deletion_cost(char):
 def substitution_cost(char_a, char_b):
     return 1.0
 
-weighted_levenshtein = WeightedLevenshtein(
-    substitution_cost_fn=substitution_cost,
-    insertion_cost_fn=insertion_cost,
-    deletion_cost_fn=deletion_cost)
+# weighted_levenshtein = WeightedLevenshtein(
+#     substitution_cost_fn=substitution_cost,
+#     insertion_cost_fn=insertion_cost,
+#     deletion_cost_fn=deletion_cost)
 
 #print(weighted_levenshtein.distance('String1', 'String'))
 

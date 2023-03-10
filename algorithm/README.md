@@ -16,4 +16,7 @@ This directory contains the code for the algorithm to transcribe Hindustani voca
 
 - ornamentation.py : this file contains the code for detecting peaks and regions of instability and their amounts to then classify them into each type of ornament.
 
-- evaluation.py : this file contains the code for the evaluation of the quantization and ornamentation detection part of the algorithm. 
+- evaluation.py : this file contains the code for the evaluation of the quantization and ornamentation detection part of the algorithm.
+
+- ground_truth_preprocessing.py : this file contains functions to preprocess and some generic utility functions.
+
