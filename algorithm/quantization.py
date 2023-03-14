@@ -150,17 +150,18 @@ def closest(lf, notes, swara):
     '''
     closest_notes = []
     swara_array = []
-    
+
     for j in range(len(lf)):
+
         if lf.iloc[j] == 0:
-            closest_notes.append(np.nan)
-            swara_array.append(np.nan)
+            closest_notes.append(0)
+            swara_array.append('REST')
         else:
             diff = notes - lf.iloc[j]
             ids=np.where(abs(diff) == min(abs(diff)))[0][0]
+
             swara_array.append(swara[ids])
             closest_notes.append(notes[ids])
-            # print("printing inside closest func:",swara[ids], notes[ids])
             
     #use binary search
     
@@ -170,23 +171,23 @@ def time_dur_sw(df_closest_swaras):
     ''' 
     Gets the quantized notes in the format time<>duration<>swara 
     '''
-
     df_res = pd.DataFrame(columns = ['time_s', 'duration', 'swara'])
 
     time_s = df_closest_swaras.iloc[0].time
+
     min_dur = df_closest_swaras.iloc[1].time - df_closest_swaras.iloc[0].time
     dur = min_dur
     for i in range(len(df_closest_swaras)-1):
-        # pdb.set_trace()
+        # print("i:", i, " swara:", df_closest_swaras.iloc[i].closest_swaras)
+        # if i == 223:
+        # if df_closest_swaras.iloc[i].closest_swaras.isalnum() == False:
+            # pdb.set_trace()
         if df_closest_swaras.iloc[i].closest_swaras == df_closest_swaras.iloc[i+1].closest_swaras :
             dur += min_dur
         else:
             entry = [time_s, dur, df_closest_swaras.iloc[i].closest_swaras]
-            # df_res.append(entry)
             df_res.loc[len(df_res.index)] = entry
             time_s = df_closest_swaras.iloc[i+1].time
-
-
 
     return df_res
 
@@ -237,23 +238,23 @@ def quantize(ph, frame_len, hop_len, log_freq, sw):
         # new_plot_quant(ph.iloc[m.argmax():], log_freq, sw)
         return mod_phrase
 
-def quantize_T(ph, frame_len, hop_len, log_freq, sw):
+# def quantize_T(ph, frame_len, hop_len, log_freq, sw):
 
-    ph['closest']=closest(ph['log_freq'], log_freq)
-    ph['closest_to_plot'] = ph['closest'].replace(0, np.nan)
-    time = ph['time']
+#     ph['closest']=closest(ph['log_freq'], log_freq)
+#     ph['closest_to_plot'] = ph['closest'].replace(0, np.nan)
+#     time = ph['time']
 
-    # pdb.set_trace()
+#     # pdb.set_trace()
 
-    stab, notesArr=stab_T(np.array(ph['closest']), frame_len, hop_len) #returns the phrase's value. So, need to change within this for processing ornamentation
+#     stab, notesArr=stab_T(np.array(ph['closest']), frame_len, hop_len) #returns the phrase's value. So, need to change within this for processing ornamentation
     
-    print(stab)
-    normalized = stabs/np.linalg.norm(stabs)
-    peaks = find_peaks(normalized)
-    pdb.set_trace()
+#     print(stab)
+#     normalized = stabs/np.linalg.norm(stabs)
+#     peaks = find_peaks(normalized)
+#     pdb.set_trace()
   
                 
-    return stab
+#     return stab
 def stab_T(x, n_frame, n_hop):
     x=x[x!=0]
     # print("len(x):", len(x))

@@ -135,9 +135,11 @@ def theWHERE(raga1, frame_len ,  hop_len,  y_thresh , x_thresh):
         hop_len: hop length in number of samples
     Returns: 
         
-    
     '''
+
     df_ornamentations = pd.DataFrame(columns = ['time', 'F0', 'orn_samples', 'dir_changes', 'unique_notes', 'orn_type'])
+    df_quantized_notes = pd.DataFrame(columns = ['time_s', 'duration', 'swara'])
+
     # ornaments=dict()
     ma_curves_all_frames=[]
     
@@ -148,11 +150,16 @@ def theWHERE(raga1, frame_len ,  hop_len,  y_thresh , x_thresh):
             df_ornamentations.loc[i] =  [[], [], [], [], [], []]
             continue
         curr_phrase = raga1.df_f0.iloc[raga1.phrases[i][0]:raga1.phrases[i][1]]
-
+           
         curr_phrase['closest'], curr_phrase['closest_swaras'] = closest(curr_phrase['log_freq'], raga1.log_freq, raga1.sw)
         # print("i:", i,"\ncurr_phrase['closest']:", curr_phrase['closest'], "\ncurr_phrase[swaras]:",curr_phrase['closest_swaras'])
-        df_quantized_notes = time_dur_sw(curr_phrase[['time','closest_swaras']])
+
+        df_temp = time_dur_sw(curr_phrase[['time','closest_swaras']])  
+
+        df_quantized_notes=pd.concat([df_quantized_notes, df_temp], ignore_index=True)
+
         
+            
         x_closest = np.array(curr_phrase['closest'].tolist())
         # print("x_closest", x_closest)
         # array_of_arrays_closest = list(curr_phrase['closest'])
@@ -188,7 +195,15 @@ def theWHERE(raga1, frame_len ,  hop_len,  y_thresh , x_thresh):
     #the WHAT
         dir_changes, original_orn_samples, unique_notes, orn_type = get_ornament_regions_and_type(x_closest, orn_samples, phrase_id=i,
                                                                                                   frame_len = frame_len ,  hop_len = hop_len, plots = False)
-        df_ornamentations.loc[i] = [list(curr_phrase['time']), x_closest, original_orn_samples, dir_changes,  unique_notes, orn_type]
+        df_ornamentations.loc[i] = [list(curr_phrase['time'].round(2)), 
+                                    np.round(x_closest, 2), 
+                                    original_orn_samples, 
+                                    dir_changes,  
+                                    unique_notes, 
+                                    orn_type]
+
+    # df_quantized_notes = pd.DataFrame(arr_quantized_notes, columns = ['time_s', 'duration', 'swara'])
+
     return df_quantized_notes, df_ornamentations
 
 #The "WHAT"

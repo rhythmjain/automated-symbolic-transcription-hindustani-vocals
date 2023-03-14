@@ -82,6 +82,7 @@ if __name__ == '__main__':
 	input_data_obj = InputData('../f0-annotations/input') #Pre-processing 
 
 	args = define_args()
+
 	# args_list = get_argument_list()
 	print("args:", args.idx, args.frame, args.jump, args.xthresh, args.ythresh, 'chosen raga: ', input_data_obj.pitches_path[args.idx[0]])
 
@@ -89,11 +90,10 @@ if __name__ == '__main__':
 	raga = Raga(args.idx[0], input_data_obj.pitches_path)
 	raga.set_raga_object(input_data_obj.pitches_path, input_data_obj.ctonic_path)
 	raga.ornamentation =  theWHERE(raga, frame_len =  args.frame[0], hop_len = args.jump[0] , y_thresh = args.ythresh[0] , x_thresh = args.xthresh[0])
-	notes, orns =  theWHERE(raga, frame_len =  args.frame[0], hop_len = args.jump[0] , y_thresh = args.ythresh[0] , x_thresh = args.xthresh[0])
-	# pdb.set_trace()
+	# notes, orns =  theWHERE(raga, frame_len =  args.frame[0], hop_len = args.jump[0] , y_thresh = args.ythresh[0] , x_thresh = args.xthresh[0])
 	# np.savetxt(args.output[0], raga.ornamentation.values)
-	
-	raga.ornamentation[0].to_csv(args.output[0], index=None, sep='\t', mode='a')
-	raga.ornamentation[1].to_csv(args.output[0], index=None, sep='\t', mode='a')
-	
+	# print("swara:\n",raga.ornamentation[0])
+	raga.ornamentation[0].round({'time_s': 2, 'duration': 2}).to_csv(args.output[0], index=None, sep='\t', mode='a')
+	raga.ornamentation[1].round({'time': 2, 'F0': 2}).to_csv(args.output[0], index=None, sep='\t', mode='a')
+	# 
 	print("File has been written")
